@@ -38,14 +38,6 @@ class Student(name: String, age: Int) : Human(name, age) {
 
     }
 
-    fun checkCourse(name: String): Boolean {
-        for (record in records) {
-            if (record.name == name) {
-                return true
-            }
-        }
-        return false
-    }
 
 
 }
