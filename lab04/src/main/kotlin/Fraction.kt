@@ -2,6 +2,13 @@ import kotlin.math.abs
 
 class Fraction(val numerator: Int, val denominator: Int, private val sign: Int = 1) : Comparable<Fraction> {
 
+    override fun toString(): String {
+        val fraction = reduce()
+        val signString = if (fraction.sign == -1) "-" else ""
+        return "$signString${fraction.numerator}/${fraction.denominator}"
+    }
+
+
     private fun greatestCommonDivisor(a: Int, b: Int): Int {
         return if (b == 0) a else greatestCommonDivisor(b, a % b)
     }
@@ -29,17 +36,13 @@ class Fraction(val numerator: Int, val denominator: Int, private val sign: Int =
         return Fraction(newNumerator, newDenominator, newSign).reduce()
     }
 
-    fun div(fraction2: Fraction): Fraction {
+    operator fun div(fraction2: Fraction): Fraction {
         val newNumerator = numerator * fraction2.denominator
         val newDenominator = denominator * fraction2.numerator
         val newSign = sign * fraction2.sign
         return Fraction(newNumerator, newDenominator, newSign).reduce()
     }
 
-    override fun toString(): String {
-        val signString = if (sign == -1) "-" else ""
-        return "$signString$numerator/$denominator"
-    }
 
     fun intPart(): Int {
         return sign * (numerator / denominator)
@@ -50,6 +53,8 @@ class Fraction(val numerator: Int, val denominator: Int, private val sign: Int =
         val value2 = other.sign * other.numerator * denominator
         return value1.compareTo(value2)
     }
+
+
 
     operator fun plus(fraction2: Fraction): Fraction {
         return this.add(fraction2)
@@ -62,16 +67,33 @@ class Fraction(val numerator: Int, val denominator: Int, private val sign: Int =
     operator fun unaryMinus(): Fraction {
         return this.negate()
     }
+
+    operator fun minus(fraction2: Fraction): Fraction {
+        return this.add(fraction2.negate())
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Fraction
+
+        if (numerator != other.numerator) return false
+        if (denominator != other.denominator) return false
+        if (sign != other.sign) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = numerator
+        result = 31 * result + denominator
+        result = 31 * result + sign
+        return result
+    }
 }
 
 
 fun main() {
-    val a = Fraction(1, 2, -1)
-    println(a)
-    println(a.add(Fraction(1,3)))
-    println(a.mult(Fraction(5,2, -1)))
-    println(a.div(Fraction(2,1)))
-    println(-Fraction(1,6) + Fraction(1,2))
-    println(Fraction(2,3) * Fraction(3,2))
-    println(Fraction(1,2) > Fraction(2,3))
+   println(Fraction(2,3) + Fraction(1,3))
 }

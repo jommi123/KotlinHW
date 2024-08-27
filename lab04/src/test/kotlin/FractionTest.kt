@@ -69,17 +69,21 @@ internal class FractionTest {
 
     @Test
     fun subtr() {
+        assert(Fraction(5,6) + -Fraction(1,6) == Fraction(2, 3))
     }
 
     @Test
     fun minus() {
+        assert(Fraction(5,6) - Fraction(1,6) == Fraction(2,3))
     }
 
     @Test
     fun mult() {
+        assert(Fraction(2,3) * Fraction(3,4) == Fraction(1,2))
     }
 
     @Test
     fun div() {
+        assert(Fraction(2,3) / Fraction(4,5) == Fraction(5,6))
     }
 }
