@@ -2,19 +2,13 @@ class Lotto {
 
     private val lottoRange = 1..40
     private val n = 7
-    private val secretNumbers = listOf(4, 7, 8, 10, 15, 2, 3)
+    private var secretNumbers = listOf(4, 7, 8, 10, 15, 2, 3)
 
     fun pickNDistinct(range: IntRange, n: Int): List<Int> {
-        val list = ArrayList<Int>()
-        var number = n
-
-        for (i in range) {
-            if (number > 0) {
-                list.add(i)
-                number--
-            }
+        if (n <= range.count()) {
+            return range.shuffled().take(n)
         }
-        return list
+        return emptyList()
     }
 
     fun numDistinct(list: List<Int>): Int {
@@ -39,12 +33,12 @@ class Lotto {
     fun isLegalLottoGuess(guess: List<Int>, range: IntRange = lottoRange, count: Int = n): Boolean {
         if (guess.distinct().size == count) {
             for (i in guess) {
-                if (i !in range) {
-                    return false
+                if (i in range) {
+                    return true
                 }
             }
         }
-        return true
+        return false
     }
 
     fun checkGuess(guess: List<Int>, secret: List<Int> = secretNumbers): Int {
@@ -53,24 +47,71 @@ class Lotto {
         }
         return 0
     }
-//
-//    fun readNDistinct(low: Int, high: Int, n: Int): List<Int> {
-//
-//    }
 
+    fun readNDistinct(low: Int, high: Int, n: Int): List<Int> {
+        val guess = readlnOrNull()
+
+        if (guess != null) {
+            val list: List<Int> = guess.split(",").map { it.toInt() }
+
+            if (isLegalLottoGuess(list, low..high, n)) {
+                return list
+            }
+
+        }
+
+        return emptyList()
+    }
+
+    fun playLotto() {
+        secretNumbers = pickNDistinct(1..40, 7)
+
+        while (true) {
+            println("Give 7 numbers from 1 to 40, separated by commas:")
+            val guess = readNDistinct(1, 40, 7)
+
+            if (guess.isEmpty()) {
+                continue
+            } else {
+                println(checkGuess(guess, secretNumbers))
+            }
+
+            println("to continue enter 1 to stop enter anything else")
+            val input = readlnOrNull()?.toInt()
+            if (input == 1) {
+                continue
+            } else {
+                break
+            }
+
+
+        }
+    }
+
+    fun findLotto(lotto: Lotto): Pair<Int, List<Int>> {
+        var steps = 0
+
+        var correctNumbers = pickNDistinct(1..40, 7)
+
+        println("Give 7 numbers from 1 to 40, separated by commas")
+        val guess = readNDistinct(1, 40, lotto.n)
+
+        var correctCount = 0
+        while (correctCount < 2) {
+            correctNumbers = pickNDistinct(1..40, 7)
+            steps++
+            correctCount = lotto.checkGuess(guess, correctNumbers)
+
+        }
+        return Pair(steps, correctNumbers)
+
+
+    }
 }
 
 fun main() {
     val lotto = Lotto()
-    var list = mutableListOf(1, 2, 1, 4, 5, 6, 7)
-    var list2 = mutableListOf(1, 2, 3, 7, 40, 50, 60)
-
-
-    println(lotto.pickNDistinct(2..6, 7))
-    println(lotto.numDistinct(list))
-    println(lotto.numCommon(list, list2))
-    println(lotto.isLegalLottoGuess(list, 1..8, 7))
-    println(lotto.checkGuess(list2))
+    println(lotto.findLotto(lotto))
 
 
 }
