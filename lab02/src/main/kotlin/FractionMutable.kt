@@ -4,8 +4,9 @@ class FractionMutable(var numerator: Int, var denominator: Int, var sign: Int = 
 
 
     override fun toString(): String {
+        reduce()
         val signString = if (sign == -1) "-" else ""
-        return if (denominator == 1) "$signString$numerator" else "$signString$numerator/$denominator"
+        return "$signString$numerator/$denominator"
     }
 
     private fun greatestCommonDivisor(a: Int, b: Int): Int {
@@ -54,3 +55,8 @@ class FractionMutable(var numerator: Int, var denominator: Int, var sign: Int = 
 
 }
 
+fun main() {
+    val a = FractionMutable(8, 3)
+    a.div(FractionMutable(4, 6))
+    println(a)
+}
